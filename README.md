@@ -145,7 +145,7 @@ back:
 | # | Scenario | Window | Ends in |
 |---|---|---|---|
 | 1 | **Normal crossing** | 6 000 – 146 000 ps | `IDLE` — full cycle completed |
-| 2 | **Gate-closing failure** | 156 000 – 266 000 ps | `FAULT` at 236 000 ps, reset at 246 000 ps |
+| 2 | **Gate-closing failure** | 156 000 – 256 000 ps | `FAULT` at 236 000 ps, reset at 246 000 ps |
 | 3 | **Gate-opening failure** | 266 000 – 416 000 ps | `FAULT` at 416 000 ps |
 
 The app plays one at a time, because replaying all three as one animation looks
