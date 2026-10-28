@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="RAILGUARD: replay of a Verilog railway level-crossing controller's RTL simulation trace.">
+  <meta name="color-scheme" content="dark">
+  <title>RAILGUARD — Trace Replay</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+<body class="no-trace">
+  <a class="skip-link" href="#player-root">Skip to playback controls</a>
+
+  <div class="file-warning" id="file-warning" hidden>
+    <strong>This page needs a local web server.</strong>
+    Browsers block JavaScript modules on pages opened straight from disk. Double-click <code>start.bat</code> in the project folder (or run <code>node server.js</code>) and open the address it prints.
+  </div>
+
+  <header class="app-header" id="app-header"></header>
+  <div id="import-error" hidden></div>
+
+  <main class="app-main">
+    <div class="col col-main">
+      <div class="chapter-bar" id="chapter-root" aria-label="Scenario selection"></div>
+      <section class="stage" id="scene-root" aria-label="Railway crossing scene"></section>
+      <section class="panel player" id="player-root" aria-label="Simulation playback"></section>
+      <section class="panel events" id="events-root" aria-label="Event history"></section>
+    </div>
+    <div class="col col-side">
+      <aside class="panel telemetry" id="telemetry-root" aria-label="Current state and telemetry"></aside>
+      <div class="side-stack">
+        <section class="panel sequences" id="sequences-root" aria-label="Detected sequences"></section>
+        <section class="panel verify" id="verify-root" aria-label="Verification results"></section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="app-footer">
+    <p>RAILGUARD replays a recorded RTL simulation trace. It does not run the Verilog design and does not control any railway equipment.</p>
+  </footer>
+
+  <div class="drop-overlay" id="drop-overlay" hidden>
+    <div class="drop-target">Drop a trace CSV to replay it</div>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    if (location.protocol === 'file:') document.getElementById('file-warning').hidden = false;
+  </script>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>

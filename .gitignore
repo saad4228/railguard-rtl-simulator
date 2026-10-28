@@ -1,0 +1,13 @@
+# Simulation build artefacts
+a.out
+*.vvp
+*.vcd
+rtl/a.out
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+*.swp
+
+# Node (the project itself has no dependencies)
+node_modules/
