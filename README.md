@@ -73,7 +73,7 @@ the barrier commanded closed and the road stopped. Failing safe means failing
 ## Verification
 
 Ten directed checks compare the full output vector against the specification at
-each key moment (`ALL TESTS PASSED`, 0 errors), and an assertion monitor on every
+each key moment — all ten pass, zero failures — and an assertion monitor on every
 negative clock edge re-checks the outputs for whatever state the FSM is in,
 calling `$fatal` on the first mismatch. The directed checks say the right things
 happened at the right moments; the monitor says nothing wrong happened in
@@ -90,9 +90,43 @@ iverilog -Wall -g2012 -o a.out design.sv testbench.sv && vvp a.out
 same command works on [EDA Playground](https://edaplayground.com) with Icarus
 Verilog 12.0 and *SystemVerilog* as the testbench language.
 
-The run writes `railguard_trace.csv`. Copy it over `data/railguard_trace.csv` to
-replay a fresh run, and update `src/data/verification.js` to match the new
-transcript.
+![Design, testbench and run log on EDA Playground](docs/screenshots/04-eda-playground.png)
+
+The run writes `railguard.vcd` and `railguard_trace.csv`. Copy the CSV over
+`data/railguard_trace.csv` to replay a fresh run, and update
+`src/data/verification.js` to match the new transcript.
+
+---
+
+## Simulation results
+
+EPWave views of the three scenarios. These carry `rst` and the testbench's own
+counters, which the CSV does not — the reset after a fault is visible here rather
+than inferred.
+
+### 1. Normal crossing
+
+`IDLE → WARNING → CLOSING → WAIT_FOR_TRAIN → PASSING → OPENING → IDLE`.
+`gate_closed` asserts before `train_in_crossing` does, and the controller holds
+in `WAIT_FOR_TRAIN` in between.
+
+![Normal crossing waveform](docs/screenshots/05-wave-normal.png)
+
+### 2. Gate-closing failure
+
+`gate_close_cmd` is asserted and `gate_closed` never answers. `CLOSING` times out
+into `FAULT` at 236 000 ps with the barrier still commanded closed; `rst` clears
+it at 246 000 ps.
+
+![Gate-closing failure waveform](docs/screenshots/06-wave-closing-fault.png)
+
+### 3. Gate-opening failure
+
+The train crosses normally, but `gate_open` never answers `gate_open_cmd`, so
+`OPENING` runs its timeout out to `FAULT` on the final sample at 416 000 ps —
+the right-hand edge of this view.
+
+![Gate-opening failure waveform](docs/screenshots/07-wave-opening-fault.png)
 
 ---
 
@@ -166,8 +200,10 @@ was asserted and when, which feedback never came, and how long it waited.
 - Train position, barrier angle and lamp flashing are **drawn for readability**.
   The trace records levels and edges, not positions. Telemetry always shows the
   true recorded values.
-- Scenario boundaries, the reset at 246 000 ps and the timeout classifications
-  are **inferred** from the state path. The UI marks every one of them as such.
+- In the **app**, scenario boundaries, the reset at 246 000 ps and the timeout
+  classifications are **inferred** from the state path, because the CSV carries
+  no scenario, `rst` or timer column. The waveforms above show them directly.
+  The UI marks every inference as such.
 
 ---
 
